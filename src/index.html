@@ -6,37 +6,32 @@
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Budgetkoll</title>
+</head>
 <body>
-  <h1>Budget- och utgiftskoll</h1>
+  <h1>Budgetkoll</h1>
 
-  <!-- Formulär för att lägga till transaktioner -->
   <div>
-    <label for="desc">Beskrivning:</label>
-    <input type="text" id="desc" placeholder="Ex: Mat, Hyra" />
+    <input type="text" id="description" placeholder="Beskrivning" />
+    <input type="number" id="amount" placeholder="Belopp" />
+    <button id="add-income">Lägg till inkomst</button>
+    <button id="add-expense">Lägg till utgift</button>
   </div>
-  <div>
-    <label for="amount">Belopp:</label>
-    <input type="number" id="amount" placeholder="Ex: 500" />
-  </div>
-  
-  <!-- Knappar för inkomst och utgift -->
-  <button id="incomeBtn">Lägg till Inkomst</button>
-  <button id="expenseBtn">Lägg till Utgift</button>
 
-  <!-- Lista med inkomster -->
   <h2>Inkomster</h2>
-  <ul id="incomeList"></ul>
+  <ul id="incomeList"></ul> <!-- Viktigt id -->
 
-  <!-- Lista med utgifter -->
   <h2>Utgifter</h2>
-  <ul id="expenseList"></ul>
+  <ul id="expenseList"></ul> <!-- Viktigt id -->
 
-  <!-- Lista med transaktioner -->
-  <h2>Transaktioner</h2>
-  <ul id="transactionList"></ul>
+  <h2>Totalt saldo: <span id="balance">0</span> kr</h2> <!-- Viktigt id -->
 
-  <!-- Visning av totalt saldo -->
-  <h2>Saldo: <span id="balance">0</span> kr</h2>
-
+  <script src="script.js"></script>
 </body>
 </html>
+

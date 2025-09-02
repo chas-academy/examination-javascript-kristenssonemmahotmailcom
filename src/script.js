@@ -1,69 +1,92 @@
 
 
-let incomes = [];
-let expenses = [];
 
 
-// HTML - Elements
-let htmlBeskrivning = document.getElementById("desc");
-let htmlBelopp = document.getElementById("amount");
-let incomeList = document.getElementById("incomeList");
-let expenseList = document.getElementById("expenseList");
-let transactionList = document.getElementById("transactionList");
-let totalDisplay = document.getElementById("balance");
 
-// Event - Lyssnare
-document.getElementById("incomeBtn").addEventListener('click', () => addTransaction('income'));
-document.getElementById("expenseBtn").addEventListener('click', () => addTransaction('expense'));
 
-// Funktion för att lägga till en transaktion
-function addTransaction(type) {
-  const description = htmlBeskrivning.value.trim();
-  const amount = parseFloat(htmlBelopp.value);
+// Transaktionslistor
+const incomes = [];
+const expenses = [];
 
-  if (description === "" || isNaN(amount)) {
-    alert("Vänligen ange en giltig beskrivning och belopp.");
+// Funktion för att hämta HTML-element dynamiskt
+function getDescriptionInput() {
+  return document.getElementById('desc');
+}
+function getAmountInput() {
+  return document.getElementById('amount');
+}
+function getIncomeList() {
+  return document.getElementById('incomeList');
+}
+function getExpenseList() {
+  return document.getElementById('expenseList');
+}
+function getBalanceDisplay() {
+  return document.getElementById('balance');
+}
+
+// Event-lyssnare för knappar
+const incomeBtn = document.getElementById('incomeBtn');
+if (incomeBtn) {
+  incomeBtn.addEventListener('click', () => addTransaction('income'));
+}
+const expenseBtn = document.getElementById('expenseBtn');
+if (expenseBtn) {
+  expenseBtn.addEventListener('click', () => addTransaction('expense'));
+}
+// Event-lyssnare
+
+
+function addTransaction(type, description, amount) {
+  // Om beskrivning och amount inte skickas in, hämta från input-fälten
+  if (typeof description === 'undefined') {
+    description = getDescriptionInput().value.trim();
+  }
+  if (typeof amount === 'undefined') {
+    amount = parseFloat(getAmountInput().value);
+  }
+
+  if (description === '' || isNaN(amount) || amount <= 0) {
+    alert('Fyll i en giltig beskrivning och ett positivt belopp.');
     return;
   }
 
-  const transaction = {
-    description: description,
-    amount: amount
-  };
+  const transaction = { description, amount };
 
   if (type === 'income') {
     incomes.push(transaction);
-    updateList(incomeList, incomes);
+    updateList(getIncomeList(), incomes, 'income');
   } else {
     expenses.push(transaction);
-    updateList(expenseList, expenses);
+    updateList(getExpenseList(), expenses, 'expense');
   }
 
-  updateTotal();
+  updateBalance();
   clearInputs();
 }
-// Funktion för att uppdatera listor
-function updateList(listElement, transactions) {
-  listElement.innerHTML = '';
-  transactions.forEach((item) => {
-    const li = document.createElement('li');
-    li.textContent = `${item.description}: ${item.amount} kr`;
-    listElement.appendChild(li);
-  });
+
+function updateList(listElement, transactions, type) {
+  const typeLabel = type === 'income' ? 'Inkomst' : 'Utgift';
+  listElement.textContent = transactions
+    .map(item => `${item.description} - ${item.amount} kr (${typeLabel})`)
+    .join('');
 }
 
-// Funktion för att uppdatera det totala saldot
-function updateTotal() {
+function updateBalance() {
   const totalIncome = incomes.reduce((sum, item) => sum + item.amount, 0);
   const totalExpense = expenses.reduce((sum, item) => sum + item.amount, 0);
   const total = totalIncome - totalExpense;
-  if (totalDisplay) {
-    totalDisplay.textContent = total + ' kr';
-  }
+  // Visa alltid som sträng, och utgift som negativt värde
+  getBalanceDisplay().textContent = total.toString();
 }
 
-// Funktion för att rensa input-fält
 function clearInputs() {
-  htmlBeskrivning.value = '';
-  htmlBelopp.value = '';
+  getDescriptionInput().value = '';
+  getAmountInput().value = '';
 }
+
+// Export för testmiljö (Node)
+if (typeof module !== 'undefined') {
+  module.exports = { addTransaction, incomes, expenses };
+}
+window.addTransaction = addTransaction;
